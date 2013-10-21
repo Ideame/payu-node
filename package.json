@@ -1,0 +1,24 @@
+{
+    "name" : "payu",
+    "version": "0.1.0",
+    "author" : "Gonzalo Aguirre",
+    "description" : "Payu SDK in node.js for Payments API and Reports API",
+    "main": "./lib/payu.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Ideame/payu.git"
+    },
+    "keywords": [
+        "api",
+        "payu",
+        "sdk",
+        "node"
+    ],
+    "devDependencies": {
+        "mocha": "1.10.0",
+        "nock": "0.18.2"
+    },
+    "engine" : {
+        "node": ">=0.6"
+    }
+}
