@@ -1,16 +1,19 @@
 {
-    "name" : "payu",
-    "version": "0.1.0",
+    "name" : "payu-latam",
+    "version": "0.2.0",
     "author" : "Gonzalo Aguirre",
     "description" : "Payu SDK in node.js for Payments API and Reports API",
     "main": "./lib/payu.js",
     "repository": {
         "type": "git",
-        "url": "https://github.com/Ideame/payu.git"
+        "url": "https://github.com/Ideame/payu-node.git"
     },
     "keywords": [
         "api",
         "payu",
+        "latam",
+        "payments",
+        "reports",
         "sdk",
         "node"
     ],
