@@ -1,24 +1,26 @@
 var nock = require('nock')
     , assert = require('assert')
+    , sinon = require('sinon')
     , Payu = require('..');
 
-describe('callApi method', function() {
-    it('should POST to test environment, payments api', function(done) {
+describe('callApi', function() {
+    it('should POST to test environment to /api-path', function(done) {
         var mockResponse = { jjx: 'jjx' };
         
         var expectedBody = {
-            command: 'PING',
+            command: 'MOCK_COMMAND',
             merchant: {
                 apiKey: 'mockApiKey',
                 apiLogin: 'mockApiLogin'
             },
-            test: true
+            test: true,
+            language: 'es'
         };
 
         var mockHttp = nock('https://stg.api.payulatam.com')
             .matchHeader('Accept', 'application/json')
             .matchHeader('Content-Type', 'application/json; charset=utf-8')
-            .post('/payments-api/4.0/service.cgi', expectedBody)
+            .post('/api-path', expectedBody)
             .reply(400, mockResponse);
 
         var api = new Payu({
@@ -27,7 +29,7 @@ describe('callApi method', function() {
             test: true
         });
 
-        api.callApi({ command: 'PING_PAYMENTS' }, function(err, res) {
+        api.callApi('/api-path', { command: 'MOCK_COMMAND' }, function(err, res) {
             assert.equal(err.httpStatusCode, 400);
             assert.deepEqual(err.response, mockResponse);
 
@@ -36,55 +38,23 @@ describe('callApi method', function() {
         });
     });
 
-    it('should POST to test environment, reports api', function(done) {
+    it('should POST to production environment to /api-path', function(done) {
         var mockResponse = { jjx: 'jjx' };
         
         var expectedBody = {
-            command: 'PING',
+            command: 'MOCK_COMMAND',
             merchant: {
                 apiKey: 'mockApiKey',
                 apiLogin: 'mockApiLogin'
             },
-            test: true
-        };
-
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .matchHeader('Accept', 'application/json')
-            .matchHeader('Content-Type', 'application/json; charset=utf-8')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
-            .reply(400, mockResponse);
-
-        var api = new Payu({
-            apiKey: 'mockApiKey',
-            apiLogin: 'mockApiLogin',
-            test: true
-        });
-
-        api.callApi({ command: 'PING_REPORTS' }, function(err, res) {
-            assert.equal(err.httpStatusCode, 400);
-            assert.deepEqual(err.response, mockResponse);
-
-            mockHttp.done();
-            done();
-        });
-    });
-
-    it('should POST to production environment, payments api', function(done) {
-        var mockResponse = { jjx: 'jjx' };
-        
-        var expectedBody = {
-            command: 'PING',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: false
+            test: false,
+            language: 'es'
         };
 
         var mockHttp = nock('https://api.payulatam.com')
             .matchHeader('Accept', 'application/json')
             .matchHeader('Content-Type', 'application/json; charset=utf-8')
-            .post('/payments-api/4.0/service.cgi', expectedBody)
+            .post('/api-path', expectedBody)
             .reply(400, mockResponse);
 
         var api = new Payu({
@@ -92,39 +62,7 @@ describe('callApi method', function() {
             apiLogin: 'mockApiLogin'
         });
 
-        api.callApi({ command: 'PING_PAYMENTS' }, function(err, res) {
-            assert.equal(err.httpStatusCode, 400);
-            assert.deepEqual(err.response, mockResponse);
-
-            mockHttp.done();
-            done();
-        });
-    });
-
-    it('should POST to production environment, reports api', function(done) {
-        var mockResponse = { jjx: 'jjx' };
-        
-        var expectedBody = {
-            command: 'PING',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: false
-        };
-
-        var mockHttp = nock('https://api.payulatam.com')
-            .matchHeader('Accept', 'application/json')
-            .matchHeader('Content-Type', 'application/json; charset=utf-8')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
-            .reply(400, mockResponse);
-
-        var api = new Payu({
-            apiKey: 'mockApiKey',
-            apiLogin: 'mockApiLogin'
-        });
-
-        api.callApi({ command: 'PING_REPORTS' }, function(err, res) {
+        api.callApi('/api-path', { command: 'MOCK_COMMAND' }, function(err, res) {
             assert.equal(err.httpStatusCode, 400);
             assert.deepEqual(err.response, mockResponse);
 
@@ -137,18 +75,19 @@ describe('callApi method', function() {
         var mockResponse = { code: 'NOT_SUCCESS' };
         
         var expectedBody = {
-            command: 'PING',
+            command: 'MOCK_COMMAND',
             merchant: {
                 apiKey: 'mockApiKey',
                 apiLogin: 'mockApiLogin'
             },
-            test: false
+            test: false,
+            language: 'es'
         };
 
         var mockHttp = nock('https://api.payulatam.com')
             .matchHeader('Accept', 'application/json')
             .matchHeader('Content-Type', 'application/json; charset=utf-8')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
+            .post('/api-path', expectedBody)
             .reply(200, mockResponse);
 
         var api = new Payu({
@@ -156,7 +95,7 @@ describe('callApi method', function() {
             apiLogin: 'mockApiLogin'
         });
 
-        api.callApi({ command: 'PING_REPORTS' }, function(err, res) {
+        api.callApi('/api-path', { command: 'MOCK_COMMAND' }, function(err, res) {
             assert(err);
             assert.deepEqual(res, mockResponse);
 
@@ -169,18 +108,19 @@ describe('callApi method', function() {
         var mockResponse = { code: 'SUCCESS' };
         
         var expectedBody = {
-            command: 'PING',
+            command: 'MOCK_COMMAND',
             merchant: {
                 apiKey: 'mockApiKey',
                 apiLogin: 'mockApiLogin'
             },
-            test: false
+            test: false,
+            language: 'es'
         };
 
         var mockHttp = nock('https://api.payulatam.com')
             .matchHeader('Accept', 'application/json')
             .matchHeader('Content-Type', 'application/json; charset=utf-8')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
+            .post('/api-path', expectedBody)
             .reply(200, mockResponse);
 
         var api = new Payu({
@@ -188,11 +128,58 @@ describe('callApi method', function() {
             apiLogin: 'mockApiLogin'
         });
 
-        api.callApi({ command: 'PING_REPORTS' }, function(err, res) {
+        api.callApi('/api-path', { command: 'MOCK_COMMAND' }, function(err, res) {
             assert(!err);
             assert.deepEqual(res, mockResponse);
 
             mockHttp.done();
+            done();
+        });
+    });
+
+});
+
+describe('callPaymentsApi', function() {
+    it('should call "callApi" with Payments API path', function(done) {
+        var mockData = { jjx: 'jjx' };
+        var mockResponse = { status: 200 };
+
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callApi').withArgs('/payments-api/4.0/service.cgi', mockData).yields(null, mockResponse);
+
+        var api = new Payu({
+            apiKey: 'mockApiKey',
+            apiLogin: 'mockApiLogin'
+        });
+
+        api.callPaymentsApi(mockData, function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
+            done();
+        });
+    });
+});
+
+describe('callReportsApi', function() {
+    it('should call "callApi" with Payments API path', function(done) {
+        var mockData = { jjx: 'jjx' };
+        var mockResponse = { status: 200 };
+
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callApi').withArgs('/reports-api/4.0/service.cgi', mockData).yields(null, mockResponse);
+
+        var api = new Payu({
+            apiKey: 'mockApiKey',
+            apiLogin: 'mockApiLogin'
+        });
+
+        api.callReportsApi(mockData, function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
             done();
         });
     });
@@ -205,69 +192,56 @@ describe('Payments methods:', function() {
         test: true
     });
 
-    it('getPaymentMethods should call GET_PAYMENT_METHODS', function(done) {        
-        var expectedBody = {
-            command: 'GET_PAYMENT_METHODS',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
-        };
+    it('getPaymentMethods should callPaymentsApi with GET_PAYMENT_METHODS', function(done) {
+        var expectedData = { command: 'GET_PAYMENT_METHODS' };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/payments-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callPaymentsApi').withArgs(expectedData).yields(null, mockResponse);
 
+        api.getPaymentMethods(function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
 
-        api.getPaymentMethods({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+            mockApi.verify();
+            done();
         });
     });
 
-    it('submitTransaction should call SUBMIT_TRANSACTION', function(done) {        
-        var expectedBody = {
-            command: 'SUBMIT_TRANSACTION',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
-        };
+    it('submitTransaction should callPaymentsApi with SUBMIT_TRANSACTION', function(done) {        
+        var expectedData = { mock: 'data', command: 'SUBMIT_TRANSACTION' };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/payments-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callPaymentsApi').withArgs(expectedData).yields(null, mockResponse);
 
-        api.submitTransaction({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+        api.submitTransaction({ mock: 'data' }, function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
+            done();
         });
     });
 
-    it('pingPayments should call PING', function(done) {        
-        var expectedBody = {
-            command: 'PING',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
-        };
+    it('pingPayments should callPaymentsApi with PING', function(done) {        
+        var expectedData = { command: 'PING' };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/payments-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callPaymentsApi').withArgs(expectedData).yields(null, mockResponse);
 
-        api.pingPayments({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+        api.pingPayments(function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
+            done();
         });
     });
 });
 
-describe('Reports methods', function() {
+describe('Reports methods:', function() {
     var api = new Payu({
         apiKey: 'mockApiKey',
         apiLogin: 'mockApiLogin',
@@ -275,83 +249,75 @@ describe('Reports methods', function() {
     });
 
     it('transactionResponseDetail should call TRANSACTION_RESPONSE_DETAIL', function(done) {        
-        var expectedBody = {
+        var expectedData = {
             command: 'TRANSACTION_RESPONSE_DETAIL',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
+            details: { transactionId: 'mock-transaction-id' }
         };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callReportsApi').withArgs(expectedData).yields(null, mockResponse);
 
+        api.transactionResponseDetail('mock-transaction-id', function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
 
-        api.transactionResponseDetail({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+            mockApi.verify();
+            done();
         });
     });
 
     it('orderDetailByReferenceCode should call ORDER_DETAIL_BY_REFERENCE_CODE', function(done) {        
-        var expectedBody = {
+        var expectedData = {
             command: 'ORDER_DETAIL_BY_REFERENCE_CODE',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
+            details: { referenceCode: 'mock-reference-code' }
         };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callReportsApi').withArgs(expectedData).yields(null, mockResponse);
 
-        api.orderDetailByReferenceCode({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+        api.orderDetailByReferenceCode('mock-reference-code', function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
+            done();
         });
     });
 
     it('orderDetail should call ORDER_DETAIL', function(done) {        
-        var expectedBody = {
+        var expectedData = {
             command: 'ORDER_DETAIL',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
+            details: { orderId: 'mock-order-id' }
         };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callReportsApi').withArgs(expectedData).yields(null, mockResponse);
 
-        api.orderDetail({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+        api.orderDetail('mock-order-id', function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
+            done();
         });
     });
 
     it('pingReports should call PING', function(done) {        
-        var expectedBody = {
-            command: 'PING',
-            merchant: {
-                apiKey: 'mockApiKey',
-                apiLogin: 'mockApiLogin'
-            },
-            test: true
-        };
+        var expectedData = { command: 'PING' };
+        var mockResponse = { status: 200 };
 
-        var mockHttp = nock('https://stg.api.payulatam.com')
-            .post('/reports-api/4.0/service.cgi', expectedBody)
-            .reply(200, { code: 'SUCCESS' });
+        var mockApi = sinon.mock(Payu.prototype);
+        mockApi.expects('callReportsApi').withArgs(expectedData).yields(null, mockResponse);
 
-        api.pingReports({ }, function(err, res) {
-            mockHttp.done();
-            done(err);
+        api.pingReports(function (err, res) {
+            assert(!err);
+            assert.deepEqual(res, mockResponse);
+
+            mockApi.verify();
+            done();
         });
     });
 });

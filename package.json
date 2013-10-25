@@ -1,6 +1,6 @@
 {
     "name" : "payu-latam",
-    "version": "0.2.0",
+    "version": "1.0.0",
     "author" : "Gonzalo Aguirre",
     "description" : "Payu SDK in node.js for Payments API and Reports API",
     "main": "./lib/payu.js",
@@ -19,7 +19,8 @@
     ],
     "devDependencies": {
         "mocha": "1.10.0",
-        "nock": "0.18.2"
+        "nock": "0.18.2",
+        "sinon": "1.7.3"
     },
     "engine" : {
         "node": ">=0.6"
